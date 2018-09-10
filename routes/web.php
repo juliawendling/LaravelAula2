@@ -17,3 +17,10 @@ Route::get('/', function () {
 
 Route::get('/atividades', 'AtividadeController@index');
 
+//aqui e um teste
+
+
+//teste 
+
+
+//teste

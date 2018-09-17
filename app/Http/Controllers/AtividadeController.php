@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Atividade;
 use Illuminate\Http\Request;
 use \Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class AtividadeController extends Controller
 {
@@ -15,7 +16,12 @@ class AtividadeController extends Controller
      */
     public function index()
     {
-        $listaAtividades = Atividade::all();
+        if( Auth::check() ){
+            $listaAtividades = Atividades::where('user_id') , Auth::id() )->get();
+        } else{
+            $listaAtividades = Atividade::all();
+        }
+
         return view('atividade.list',['atividades' => $listaAtividades]);
     }
 
@@ -40,7 +46,7 @@ class AtividadeController extends Controller
     //faço as validações dos campos
         //vetor com as mensagens de erro
         $messages = array(
-            'title.required' => 'É obrigatório um título para a atividade',
+            'title.required'       => 'É obrigatório um título para a atividade',
             'description.required' => 'É obrigatória uma descrição para a atividade',
             'scheduledto.required' => 'É obrigatório o cadastro da data/hora da atividade',
         );
@@ -64,6 +70,7 @@ class AtividadeController extends Controller
         $obj_Atividade->title =       $request['title'];
         $obj_Atividade->description = $request['description'];
         $obj_Atividade->scheduledto = $request['scheduledto'];
+        $obj_Atividade->user_id = Auth::id();
         $obj_Atividade->save();
 
         return redirect('/atividades')->with('success', 'Atividade criada com sucesso!!');
